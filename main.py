@@ -51,3 +51,6 @@ def image_stego(op):
       result = rc4_instance.decrypt()
     mime='text/plain'
   return Response(result, mimetype=mime)
+
+if __name__ == '__main__':
+  app.run()

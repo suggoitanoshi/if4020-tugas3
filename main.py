@@ -17,11 +17,11 @@ def index():
 def operate_rc4():
   key = request.form['key']
   file = request.files['file']
-  rc4_instance = rc4.RC4(file.stream.read(), bytearray(key, 'utf-8'))
+  rc4_instance = rc4.RC4(bytearray(key, 'utf-8'))
   if request.form['op'] == 'encrypt':
-    return rc4_instance.encrypt()
+    return bytes(rc4_instance.encrypt(file.stream.read()))
   elif request.form['op'] == 'decrypt':
-    return rc4_instance.decrypt()
+    return bytes(rc4_instance.decrypt(file.stream.read()))
 
 @app.route('/stego/image/<op>', methods=['POST'])
 def image_stego(op):

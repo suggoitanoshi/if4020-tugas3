@@ -31,23 +31,24 @@ class RC4:
     """
     j = 0
     enc = [x for x in message]
+    key = self.__S.copy()
     for idx in range(len(message)):
       # get i and j
       i = (idx+1) % 256
-      j = (j + self.__S[i]) % 256
+      j = (j + key[i]) % 256
       # swap i and j
-      tmp = self.__S[i]
-      self.__S[i] = self.__S[j]
-      self.__S[j] = tmp
+      tmp = key[i]
+      key[i] = key[j]
+      key[j] = tmp
       # run through LFSR once
-      u = self.__LFSR()
+      u = self.__LFSR(key)
       # encrypt
       enc[idx] = enc[idx] ^ u
     return enc
 
-  def __LFSR(self) -> int:
+  def __LFSR(self, key: bytearray) -> int:
     """Linear Feedback Shift Register"""
-    x = self.__S.pop()
-    out = x ^ self.__S[254] ^ self.__S[244]
-    self.__S.append(out)
+    x = key.pop()
+    out = x ^ key[254] ^ key[244]
+    key.append(out)
     return out

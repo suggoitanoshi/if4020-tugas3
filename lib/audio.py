@@ -4,7 +4,7 @@ import random
 class audio_stego(stego):
   def __init__(self, carrier: bytearray, random: bool):
     """Objek untuk menangani Steganografi Audio"""
-    super().__init__(carrier)
+    self.__carrier = carrier
     self.__israndom = random
     self.__channel, self.__bitsample, self.__datasize, self.__payload = self.__getaudioinfo()
 

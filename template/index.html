@@ -55,7 +55,7 @@
             $('#rc4keylabel').hide();
             $('#carrier').prop('required',true)
             $('#fileinput').prop('required',true)
-            if($('#urutan').val() == 'acak')
+            if($('#urutan').val() == 'acak' || $('#stegoenkripsi').is(':checked'))
             {
               $('#keystegolabel').show();
             }
@@ -122,6 +122,13 @@
             $('#fileinputlabel').hide();
           }
         });
+    $('#stegoenkripsi').change((e) => {
+      if($('#stegoenkripsi').is(':checked')){
+        $('#keystegolabel').show();
+      }else{
+        $('#keystegolabel').hide();
+      }
+    });
     
   });
   </script>
@@ -185,7 +192,7 @@
     </div>
     <div id='rc4outputlabel'>
       <label for="rc4output" id='prosesteks2'>Cipherteks:</label><br>
-      <textarea id="rc4output" name="rc4output" readonly></textarea>
+      <textarea id="rc4output" name="rc4output" readonly>{{rc4output}}</textarea>
     </div>
     <div id='carrierlabel'>
       <label for="carrier">Carrier:</label>
@@ -198,7 +205,7 @@
     <input type="submit" value="Submit">
   </form>
   {% if message %}
-  <div class='msg'><p>{{ message }}</p><p>>> <a href='{{ download }}'>Download</a> <<</p></div>
+  <div class='msg'><p>{{ message }}</p><p>>> <a href='data:{{filemime}};base64,{{ filebin }}'>Download</a> <<</p></div>
   {% endif %}
 </body>
 </html>

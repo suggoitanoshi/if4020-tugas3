@@ -1,5 +1,7 @@
 # from a import bitstring_to_ba
 import random
+from typing import BinaryIO, Tuple
+import io
 from lib.rc4 import RC4
 from PIL import Image
 from math import ceil,floor,log10, sqrt
@@ -7,9 +9,10 @@ from math import ceil,floor,log10, sqrt
 class stego:
   input_file = ""
   
-  def __init__(self, inputfile: str):
+  def __init__(self, carrier: BinaryIO):
     """Objek generik untuk menangani Steganografi"""
-    self.input_file = inputfile
+    self.input_file = carrier 
+    self.__carrier = carrier
 
   def embed(self, message: bytearray, key: bytearray):
     """Masukkan message ke dalam carrier, mengembalikan carrier yang berisi pesan"""
@@ -22,7 +25,7 @@ class stego:
 class image_stego(stego):
   MESSAGE_INFO_LENGTH = 1+32+1 # 1 bit randomize info, 1 bit encryption info, 32 bit message length info
 
-  def __init__(self, inputfile: str):
+  def __init__(self, inputfile: BinaryIO):
     super().__init__(inputfile)
 
   def ba_to_bitstring(self,ba:bytearray)->str:
@@ -56,8 +59,8 @@ class image_stego(stego):
       return org_value+1
     return org_value
   
-  def embed(self, outputfile: str, message: bytearray, key: bytearray, encryption: bool, randomize: bool):
-    target_image = Image.open(self.input_file,'r')
+  def embed(self, outputfile: str, message: bytearray, key: bytearray, encryption: bool, randomize: bool) -> Tuple[float, bytes]:
+    target_image = Image.open(self.input_file)
 
     # Get pixel array
     pixel_array = list(target_image.copy().getdata())
@@ -151,7 +154,10 @@ class image_stego(stego):
     # Save result
     created_image = Image.new(mode=target_image.mode, size=target_image.size)
     created_image.putdata(pixel_array_new)
-    created_image.save(outputfile)
+    bytesout = io.BytesIO()
+    created_image.save(bytesout, format=target_image.format)
+
+    return psnr, bytesout.getvalue()
 
     
   def extract(self, key: bytearray) -> bytearray:

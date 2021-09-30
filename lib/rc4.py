@@ -6,22 +6,49 @@ class RC4:
 
   def encrypt(self, message: bytearray) -> bytearray:
     """Enkripsi pesan dengan RC4"""
-    return message
+    return self.__PRGA(message)
 
   def decrypt(self, message: bytearray) -> bytearray:
     """Dekripsi pesan dari RC4"""
-    return message
+    return self.__PRGA(message)
 
-  def __KSA(self, S):
+  def __KSA(self, S: bytearray):
     """Key-Scheduling Algorithm
     Fungsi ini mengisi atribut S dari object RC4 yang terbentuk
     dengan memanipulasi S yang diberikan
     """
-    self.__S = S
-    pass
+    self.__S = S.copy() # copy S
+    j = 0
+    for i in range(256):
+      j = (j + self.__S[i] + self.__key[i % len(self.__key)]) % 256
+      # swap S[i] and S[j]
+      tmp = self.__S[i]
+      self.__S[i] = self.__S[j]
+      self.__S[j] = tmp
 
-  def __PRGA(self) -> bytearray:
-    """Pseudorandom Generation Algorithm
-    Fungsi ini mengubah atribut S dari object RC4 yang terbentuk
+  def __PRGA(self, message: bytearray) -> bytearray:
+    """Pseudorandom Generation Algorithm - membangkitkan Keystream
     """
-    pass
+    j = 0
+    enc = message.copy()
+    key = self.__S.copy()
+    for idx in range(len(message)):
+      # get i and j
+      i = (idx+1) % 256
+      j = (j + key[i]) % 256
+      # swap i and j
+      tmp = key[i]
+      key[i] = key[j]
+      key[j] = tmp
+      # run through LFSR once
+      u = self.__LFSR(key)
+      # encrypt
+      enc[idx] = enc[idx] ^ u
+    return enc
+
+  def __LFSR(self, key: bytearray) -> int:
+    """Linear Feedback Shift Register"""
+    x = key.pop()
+    out = x ^ key[254] ^ key[244]
+    key.append(out)
+    return out

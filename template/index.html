@@ -4,9 +4,201 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hello</title>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <title>Tugas 3 Kriptografi</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function () {
+    $('#carrier').prop('required',false);
+    $('#fileinput').prop('required',false);
+    $('#jenis').change(function(){
+        if($('#jenis').val() == 'rc4') {
+            $('#proseslabel').show();
+            $('#rc4inputlabel').show();
+            $('#rc4outputlabel').show();
+            $('#inputlabel').show(); 
+            $('#proses2label').hide(); 
+            $('#urutanlabel').hide(); 
+            $('#stegoenkripsilabel').hide();
+            $('#keystegolabel').hide();
+            $('#carrierlabel').hide(); 
+            $('#carrier').prop('required',false)
+            $('#rc4keylabel').show();
+            
+
+            if($('#input').val() == 'papanketik') {
+              $('#fileinputlabel').hide();
+              $('#fileinput').prop('required',false)
+              $('#rc4input').prop('required',true);
+              $('#rc4key').prop('required',true);
+            }
+            else{
+              $('#rc4inputlabel').hide();
+              $('#rc4outputlabel').hide();
+              $('#fileinputlabel').show();
+              $('#rc4input').prop('required',false);
+              $('#rc4key').prop('required',false);
+              $('#fileinput').prop('required',true)
+            }
+        } else {
+            $('#rc4input').prop('required',false);
+            $('#rc4key').prop('required',false);
+            $('#proseslabel').hide();
+            $('#fileinputlabel').show();
+            $('#inputlabel').hide();
+            $('#rc4inputlabel').hide(); 
+            $('#rc4outputlabel').hide();
+            $('#proses2label').show(); 
+            $('#urutanlabel').show(); 
+            $('#stegoenkripsilabel').show(); 
+            $('#rc4keylabel').hide();
+            $('#carrier').prop('required',true)
+            $('#fileinput').prop('required',true)
+            if($('#urutan').val() == 'acak')
+            {
+              $('#keystegolabel').show();
+            }
+            $('#carrierlabel').show(); 
+            if($('#proses2').val() == 'embed') {
+              $('#fileinputlabel').show();
+              $('#fileinput').prop('required',true)
+            }
+            else
+            {
+              $('#fileinputlabel').hide();
+              $('#fileinput').prop('required',false)
+            }
+        }});
+        $('#input').change(function(){
+          if($('#input').val() == 'papanketik') {
+            $('#rc4input').show();
+            $('#rc4inputlabel').show();
+            $('#rc4outputlabel').show();
+            $('#fileinputlabel').hide();
+            $('#rc4input').prop('required',true);
+            $('#rc4key').prop('required',true);
+            $('#fileinput').prop('required',false)
+          }
+          else
+          {
+            $('#rc4input').hide();
+            $('#rc4inputlabel').hide();
+            $('#rc4outputlabel').hide();
+            $('#fileinputlabel').show();
+            $('#rc4input').prop('required',false);
+            $('#rc4key').prop('required',false);
+            $('#fileinput').prop('required',true)
+          }
+        });
+        $('#urutan').change(function(){
+          if($('#urutan').val() == 'acak') {
+            $('#keystegolabel').show();
+            $('#keystego').prop('required',true)
+          }
+          else
+          {
+            $('#keystegolabel').hide();
+            $('#keystego').prop('required',false)
+          }
+        });
+        $('#proses').change(function(){
+          if($('#proses').val() == 'dekripsi') {
+            $('#prosesteks').text('Cipherteks:');
+            $('#prosesteks2').text('Plainteks:');
+          }
+          else
+          {
+            $('#prosesteks').text('Plainteks:');
+            $('#prosesteks2').text('Cipherteks:');
+          }
+        });
+        $('#proses2').change(function(){
+          if($('#proses2').val() == 'embed') {
+            $('#fileinputlabel').show();
+          }
+          else
+          {
+            $('#fileinputlabel').hide();
+          }
+        });
+    
+  });
+  </script>
+
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <h1>RC4 & Steganografi LSB</h1>
+  <form action="" method="POST" enctype="multipart/form-data">
+    <div id='jenislabel'>
+      <label for="jenis">Jenis:</label>
+      <select name="jenis" id="jenis">
+        <option value="rc4">RC4</option>
+        <option value="stegoimage">Steganografi Citra</option>
+        <option value="stegoaudio">Steganografi Audio</option>
+      </select>
+    </div>
+    <div id='proseslabel'>
+      <label for="proses">Proses:</label>
+      <select name="proses" id="proses">
+        <option value="enkripsi">Enkripsi</option>
+        <option value="dekripsi">Dekripsi</option>
+      </select>
+    </div>
+    <div id='proses2label'>
+      <label for="proses2">Proses:</label>
+      <select name="proses2" id="proses2">
+        <option value="embed">Embed</option>
+        <option value="extract">Extract</option>
+      </select>
+    </div>
+    <div id='urutanlabel'>
+      <label for="urutan">Urutan:</label>
+      <select name="urutan" id="urutan">
+        <option value="sekuensial">Sekuensial</option>
+        <option value="acak">Acak</option>
+      </select>
+    </div>
+    <div id='inputlabel'>
+      <label for="input">Input:</label>
+      <select name="input" id="input">
+        <option value="papanketik">Papan Ketik</option>
+        <option value="file">File</option>
+      </select>
+    </div>
+    <div id='stegoenkripsilabel'>
+      <input type="checkbox" id="stegoenkripsi" name="stegoenkripsi" value="true">
+      <label for="stegoenkripsi">Gunakan enkripsi</label>
+    </div>
+    <div id='keystegolabel'>
+      <label for="keystego">Key:</label>
+      <input type="number" id="keystego" name="keystego" >
+    </div>
+    
+    <div id='rc4keylabel'>
+      <label for="rc4key">Key:</label><br>
+      <input type='text' id="rc4key" name="rc4key" required> 
+    </div>
+    <div id='rc4inputlabel'>
+      <label for="rc4input" id='prosesteks'>Plainteks:</label><br>
+      <textarea id="rc4input" name="rc4input" required></textarea>
+    </div>
+    <div id='rc4outputlabel'>
+      <label for="rc4output" id='prosesteks2'>Cipherteks:</label><br>
+      <textarea id="rc4output" name="rc4output" readonly></textarea>
+    </div>
+    <div id='carrierlabel'>
+      <label for="carrier">Carrier:</label>
+      <input type="file" id="carrier" name="carrier">
+    </div>
+    <div id='fileinputlabel'>
+      <label for="fileinput">File pesan:</label>
+      <input type="file" id="fileinput" name="fileinput">
+    </div>
+    <input type="submit" value="Submit">
+  </form>
+  {% if message %}
+  <div class='msg'><p>{{ message }}</p><p>>> <a href='{{ download }}'>Download</a> <<</p></div>
+  {% endif %}
 </body>
 </html>

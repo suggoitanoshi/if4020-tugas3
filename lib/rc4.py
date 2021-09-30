@@ -17,7 +17,7 @@ class RC4:
     Fungsi ini mengisi atribut S dari object RC4 yang terbentuk
     dengan memanipulasi S yang diberikan
     """
-    self.__S = [x for x in S] # copy S
+    self.__S = S.copy() # copy S
     j = 0
     for i in range(256):
       j = (j + self.__S[i] + self.__key[i % len(self.__key)]) % 256
@@ -30,7 +30,7 @@ class RC4:
     """Pseudorandom Generation Algorithm - membangkitkan Keystream
     """
     j = 0
-    enc = [x for x in message]
+    enc = message.copy()
     key = self.__S.copy()
     for idx in range(len(message)):
       # get i and j

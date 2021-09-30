@@ -1,13 +1,14 @@
+from lib.stego import stego
 import random
 
-class audio_stego:
+class audio_stego(stego):
   def __init__(self, carrier: bytearray, random: bool):
     """Objek untuk menangani Steganografi Audio"""
-    self.__carrier = carrier
+    super().__init__(carrier)
     self.__israndom = random
     self.__channel, self.__bitsample, self.__datasize, self.__payload = self.__getaudioinfo()
 
-  def embed(self, message: bytearray, key: int):
+  def embed(self, message: bytearray, key: int) -> bytearray:
     #Cek jump menurut tipe file wav (16-bit, 24-bit, 32-bit)
     jump = self.__bitsample//8
     panjangpesan = len(message)
@@ -108,9 +109,10 @@ class audio_stego:
       messageobj[i] = messagebytes[i]
 
     #X. Write file hasil
-    fname = open('../hasilekstrak', 'wb')
-    fname.write(messageobj)
-    fname.close()
+    # fname = open('../hasilekstrak', 'wb')
+    # fname.write(messageobj)
+    # fname.close()
+    return messageobj
     #print('Done!')
       
 

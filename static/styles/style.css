@@ -21,7 +21,7 @@ body{
 label{
     font-size: 1.1em;
 }
-select, textarea, input[type=number]{
+select, textarea, input[type=number], input[type=text]{
     width: 100%;
     font-size: 1.05em;
     padding: 6px;
@@ -40,6 +40,16 @@ div{
     margin-bottom: 10px;
 }
 
+.msg{
+    margin: auto;
+    text-align: center;
+    color: #09337d;
+    padding: 20px;
+    margin: 20px;
+    border-color: #8cced4;
+    border-style: dashed;
+}
+
 input[type=submit] {
     background-color: #315078;
     border: none;
@@ -50,4 +60,8 @@ input[type=submit] {
     cursor: pointer;
     border-radius: 20px;
     width: 100%;
-  }
+}
+
+input[type=submit]:hover{
+    background-color: #1e395c;
+}

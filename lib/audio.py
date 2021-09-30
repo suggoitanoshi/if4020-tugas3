@@ -56,9 +56,10 @@ class audio_stego:
           self.__carrier[i*jump+49] = self.__changetoone(self.__carrier[i*jump+49])   
 
     #X. Write file hasil
-    fname = open('../teswriteacak.wav', 'wb')
-    fname.write(self.__carrier)
-    fname.close()
+    #fname = open('downloads/audioembed.wav', 'wb')
+    #fname.write(self.__carrier)
+    #fname.close()
+    return self.__carrier
     #print('Done!')
 
 
@@ -107,7 +108,7 @@ class audio_stego:
       messageobj[i] = messagebytes[i]
 
     #X. Write file hasil
-    fname = open('../hasilekstrakacak', 'wb')
+    fname = open('../hasilekstrak', 'wb')
     fname.write(messageobj)
     fname.close()
     #print('Done!')
@@ -126,9 +127,9 @@ class audio_stego:
     # 35 - 36: Bits/sample
     # 37 - 40: Data header
     # 41 - 44: Data size
-    channel = int.from_bytes(byte[22:23], 'little')
-    bitsample = int.from_bytes(byte[34:35], 'little')
-    datasize = int.from_bytes(byte[40:43], 'little')
+    channel = int.from_bytes(self.__carrier[22:23], 'little')
+    bitsample = int.from_bytes(self.__carrier[34:35], 'little')
+    datasize = int.from_bytes(self.__carrier[40:43], 'little')
     #print('channel:', channel)
     #print('sample :', bitsample)
     #print('size   :', datasize)
@@ -164,18 +165,18 @@ class audio_stego:
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-file = open("../teswriteacak.wav", "rb")
-byte = bytearray(file.read()) 
-file.close()
+#file = open("../teswriteacak.wav", "rb")
+#byte = bytearray(file.read()) 
+#file.close()
 
 
 # 4. Memasukkan file
-finput = open("../tespesan", "rb")
-pesan = bytearray(finput.read()) 
-finput.close()
+#finput = open("../tespesan", "rb")
+##pesan = bytearray(finput.read()) 
+#finput.close()
 
 
 
-audio = audio_stego(byte, True)
+#audio = audio_stego(byte, True)
 #audio.embed(pesan,42)
-audio.extract(42)
+#audio.extract(42)

@@ -128,6 +128,10 @@ class image_stego(stego):
       sigma_i = 0
       for i in range(len(pixel_array)):
         sigma_i += (pixel_array[i]-pixel_array_new[i]) ** 2
+      if (sigma_i==0):
+        # Embedded image has no difference with original image
+        # psnr = -1
+        return self.embed_result(target_image.format,target_image.mode,target_image.size,pixel_array_new,None)
       rms = sqrt(sigma_i/(target_image.size[0]*target_image.size[1]))
       psnr = 20 * log10(255/rms)
       if psnr <= 30: # PSNR too low
@@ -140,6 +144,12 @@ class image_stego(stego):
       for pixel_idx in range(len(pixel_array)):
         for channel in range(len(pixel_array[pixel_idx])):
           sigma_i[channel] += (pixel_array[pixel_idx][channel]-pixel_array_new[pixel_idx][channel]) ** 2
+      for sig in sigma_i:
+        if (sig==0):
+          # Embedded image has no difference with original image
+          # psnr = -1
+          return self.embed_result(target_image.format,target_image.mode,target_image.size,pixel_array_new,None)
+
       rms = [(sqrt(sigma_i_channel/(target_image.size[0]*target_image.size[1]))) for sigma_i_channel in sigma_i]
 
       psnr = ""
@@ -151,13 +161,7 @@ class image_stego(stego):
           raise Exception("FAIL : PSNR < 30 : PSNR = " + str(psnr))
     
     # Save result
-    created_image = Image.new(mode=target_image.mode, size=target_image.size)
-    created_image.putdata(pixel_array_new)
-    bytesout = io.BytesIO()
-    created_image.save(bytesout, format=target_image.format)
-
-    return psnr, bytesout.getvalue()
-
+    return self.embed_result(target_image.format,target_image.mode,target_image.size,pixel_array_new,psnr)
     
   def extract(self, key: bytearray) -> bytearray:
     target_image = Image.open(self.input_file,'r')
@@ -205,3 +209,14 @@ class image_stego(stego):
       return rc.decrypt(self.bitstring_to_ba(message_bin))
     else:
       return self.bitstring_to_ba(message_bin)
+
+  def embed_result(self,format,mode,size,data,psnr):
+    """
+    Save embedding result with the given format, mode, size, data, and psnr
+    """
+    created_image = Image.new(mode=mode, size=size)
+    created_image.putdata(data)
+    bytesout = io.BytesIO()
+    created_image.save(bytesout, format=format)
+
+    return psnr, bytesout.getvalue()

@@ -30,11 +30,10 @@ class audio_stego(stego):
       bit = self.__tobit(bytepanjang[i//8])[i%8]
       if bit != self.__tobit(self.__carrier[44+i])[-1]:
         diff += 1
+      if bit == '0':
+        self.__carrier[44+i] = self.__changetozero(self.__carrier[44+i])
       else:
-        if bit == '0':
-          self.__carrier[44+i] = self.__changetozero(self.__carrier[44+i])
-        else:
-          self.__carrier[44+i] = self.__changetoone(self.__carrier[44+i])
+        self.__carrier[44+i] = self.__changetoone(self.__carrier[44+i])
 
     if(self.__israndom):
       maxrand = self.__payload//jump
@@ -55,11 +54,10 @@ class audio_stego(stego):
            
           if bit != self.__tobit(self.__carrier[44+i])[-1]:
             diff += 1
+          if(bitpesan[bitidx]=='0'):
+            self.__carrier[idx+77] = self.__changetozero(self.__carrier[idx+77])
           else:
-            if(bitpesan[bitidx]=='0'):
-              self.__carrier[idx+77] = self.__changetozero(self.__carrier[idx+77])
-            else:
-              self.__carrier[idx+77] = self.__changetoone(self.__carrier[idx+77])
+            self.__carrier[idx+77] = self.__changetoone(self.__carrier[idx+77])
           i += 1
           idx = random.randint(0,maxrand)*jump
     
@@ -76,11 +74,10 @@ class audio_stego(stego):
         
         if bit != self.__tobit(self.__carrier[44+i])[-1]:
           diff += 1
+        if(bitpesan[bitidx]=='0'):
+          self.__carrier[i*jump+77] = self.__changetozero(self.__carrier[i*jump+77])
         else:
-          if(bitpesan[bitidx]=='0'):
-            self.__carrier[i*jump+77] = self.__changetozero(self.__carrier[i*jump+77])
-          else:
-            self.__carrier[i*jump+77] = self.__changetoone(self.__carrier[i*jump+77]) 
+          self.__carrier[i*jump+77] = self.__changetoone(self.__carrier[i*jump+77]) 
 
     if diff != 0:
       self.__fidelity -= diff/len(self.__carrier)
@@ -115,6 +112,7 @@ class audio_stego(stego):
       lengthobj[i] = bytetemp[i]
 
     panjangpesan = int.from_bytes(lengthobj, 'big')
+    #print(panjangpesan)
     arrtemp = [0 for i in range(0, panjangpesan)]
     messagebytes = []
     
@@ -161,7 +159,7 @@ class audio_stego(stego):
       messageobj[i] = messagebytes[i]
 
     #X. Write file hasil
-    #fname = open('../hasilekstrak2', 'wb')
+    #fname = open('../eks', 'wb')
     #fname.write(messageobj)
     #fname.close()
     return messageobj
@@ -219,7 +217,7 @@ class audio_stego(stego):
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-#file = open("../example.wav", "rb")
+#file = open("../audio.wav", "rb")
 #byte = bytearray(file.read()) 
 #file.close()
 

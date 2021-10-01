@@ -63,7 +63,6 @@ def index():
         message = f'Success extract message'
         fileb64 = base64.b64encode(result).decode()
     else:
-      isaudio = 'true'
       key = request.form.get('keystego')
       pesan = bytearray(request.files['fileinput'].stream.read())
       carrier = bytearray(request.files['carrier'].stream.read())
@@ -82,11 +81,13 @@ def index():
             message = rc4i.encrypt(pesan)
           if request.form.get('urutan') == 'acak':
             # Embed audio, urutan acak dengan key
+            isaudio = 'true'
             audio = stegoaudio.audio_stego(carrier, True)
             fileb64 = base64.b64encode(audio.embed(pesan,key)).decode()
             message = 'File sudah diembed. Fidelity: ' + str(audio.getfidelity())
           else:
             # Embed audio, urutan sekuensial
+            isaudio = 'true'
             audio = stegoaudio.audio_stego(carrier, False)
             fileb64 = base64.b64encode(audio.embed(pesan,0)).decode()
             message = 'File sudah diembed. Fidelity: ' + str(audio.getfidelity())
@@ -94,12 +95,12 @@ def index():
           if request.form.get('urutan') == 'acak':
             # Extract audio, urutan acak dengan key
             audio = stegoaudio.audio_stego(carrier, True)
-            extracted = audio.extract(pesan, key)
+            fileb64 = base64.b64encode(audio.extract(key)).decode()
             message = 'File sudah diextract'
           else:
             # Extract audio, urutan sekuensial
             audio = stegoaudio.audio_stego(carrier, False)
-            extracted = audio.extract(pesan, 0)
+            fileb64 = base64.b64encode(audio.extract(0)).decode()
             message = 'File sudah diextract'
           if request.form.get('stegoenkripsi') == 'true':
             extracted = rc4i.decrypt(extracted)

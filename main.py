@@ -11,11 +11,16 @@ app = Flask(__name__,
   static_url_path='',
   static_folder='static')
 
+@app.route('/static/<path:filename>')
+def download_file(filename):
+    return send_from_directory('/home/name/Music/', path=filename)
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
   message = '' #success msg / psnr / fidelity
   fileb64 = None
   rc4output = None
+  isaudio = ''
   mime='application/octet-stream'
   if request.method == 'POST':
     jenis = request.form.get('jenis')
@@ -58,6 +63,7 @@ def index():
         message = f'Success extract message'
         fileb64 = base64.b64encode(result).decode()
     else:
+      isaudio = 'true'
       key = request.form.get('keystego')
       pesan = bytearray(request.files['fileinput'].stream.read())
       carrier = bytearray(request.files['carrier'].stream.read())
@@ -98,7 +104,7 @@ def index():
           if request.form.get('stegoenkripsi') == 'true':
             extracted = rc4i.decrypt(extracted)
           fileb64 = base64.b64encode(extracted).decode()
-  return render_template('index.html', message=message, filebin=fileb64, rc4output=rc4output, filemime=mime)
+  return render_template('index.html', isaudio=isaudio, message=message, filebin=fileb64, rc4output=rc4output, filemime=mime)
 
 if __name__ == '__main__':
   app.run(debug=True)

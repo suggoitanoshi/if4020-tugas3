@@ -85,9 +85,9 @@ class audio_stego(stego):
     if diff != 0:
       self.__fidelity -= diff/len(self.__carrier)
     #X. Write file hasil
-    #fname = open('../audioembed.wav', 'wb')
-    #fname.write(self.__carrier)
-    #fname.close()
+    fname = open('static/audio.wav', 'wb')
+    fname.write(self.__carrier)
+    fname.close()
     return self.__carrier
     #print('Done!')
 
@@ -219,18 +219,18 @@ class audio_stego(stego):
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-# file = open("../example.wav", "rb")
-# byte = bytearray(file.read()) 
-# file.close()
+#file = open("../example.wav", "rb")
+#byte = bytearray(file.read()) 
+#file.close()
 
 
 # 4. Memasukkan file
-# finput = open("../tespesan", "rb")
-# pesan = bytearray(finput.read()) 
-# finput.close()
+#finput = open("../tespesan", "rb")
+#pesan = bytearray(finput.read()) 
+#finput.close()
 
 
 
-# audio = audio_stego(byte, False)
-# audio.embed(pesan,42)
+#audio = audio_stego(byte, False)
+#audio.embed(pesan,42)
 #audio.extract(42)

@@ -232,7 +232,12 @@
     <input type="submit" value="Submit">
   </form>
   {% if message %}
-  <div class='msg'><p>{{ message }}</p>{% if filebin %}<p>>> <a href='data:{{filemime}};base64,{{ filebin }}'>Download</a> <<</p>{% endif %}</div>
+  <div class='msg'><p>{{ message }}</p>
+  {% if isaudio %}
+  <p>>> <a href="{{url_for('static', filename='audio.wav')}}">Download</a><<</p> 
+  {% else %}
+  {% if filebin %}<p>>> <a href='data:{{filemime}};base64,{{ filebin }}'>Download</a> <<</p>{% endif %}</div>
+  {% endif %}
   {% endif %}
 </body>
 </html>

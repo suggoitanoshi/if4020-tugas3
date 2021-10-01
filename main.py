@@ -95,12 +95,12 @@ def index():
           if request.form.get('urutan') == 'acak':
             # Extract audio, urutan acak dengan key
             audio = stegoaudio.audio_stego(carrier, True)
-            fileb64 = base64.b64encode(audio.extract(key)).decode()
+            extracted = audio.extract(key)
             message = 'File sudah diextract'
           else:
             # Extract audio, urutan sekuensial
             audio = stegoaudio.audio_stego(carrier, False)
-            fileb64 = base64.b64encode(audio.extract(0)).decode()
+            extracted = audio.extract(0)
             message = 'File sudah diextract'
           if request.form.get('stegoenkripsi') == 'true':
             extracted = rc4i.decrypt(extracted)

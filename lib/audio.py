@@ -84,9 +84,9 @@ class audio_stego(stego):
         #print(self.__carrier[i*jump+77]) 
     
     #X. Write file hasil
-    fname = open('../audioembed.wav', 'wb')
-    fname.write(self.__carrier)
-    fname.close()
+    #fname = open('../audioembed.wav', 'wb')
+    #fname.write(self.__carrier)
+    #fname.close()
     return self.__carrier
     #print('Done!')
 
@@ -156,9 +156,9 @@ class audio_stego(stego):
       messageobj[i] = messagebytes[i]
 
     #X. Write file hasil
-    fname = open('../hasilekstrak2', 'wb')
-    fname.write(messageobj)
-    fname.close()
+    #fname = open('../hasilekstrak2', 'wb')
+    #fname.write(messageobj)
+    #fname.close()
     return messageobj
     #print('Done!')
       
@@ -214,20 +214,20 @@ class audio_stego(stego):
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-file = open("../example.wav", "rb")
-byte = bytearray(file.read()) 
-file.close()
+#file = open("../example.wav", "rb")
+#byte = bytearray(file.read()) 
+#file.close()
 
 
 # 4. Memasukkan file
-finput = open("../tespesan", "rb")
-pesan = bytearray(finput.read()) 
-finput.close()
+#finput = open("../tespesan", "rb")
+#pesan = bytearray(finput.read()) 
+#finput.close()
 
 
 
-audio = audio_stego(byte, False)
-audio.embed(pesan,42)
+#audio = audio_stego(byte, False)
+#audio.embed(pesan,42)
 #audio.extract(42)
 
-print(audio.fidelity())
+#print(audio.fidelity())

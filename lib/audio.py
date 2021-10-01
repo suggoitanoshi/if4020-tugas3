@@ -219,18 +219,18 @@ class audio_stego(stego):
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-file = open("../example.wav", "rb")
-byte = bytearray(file.read()) 
-file.close()
+# file = open("../example.wav", "rb")
+# byte = bytearray(file.read()) 
+# file.close()
 
 
 # 4. Memasukkan file
-finput = open("../tespesan", "rb")
-pesan = bytearray(finput.read()) 
-finput.close()
+# finput = open("../tespesan", "rb")
+# pesan = bytearray(finput.read()) 
+# finput.close()
 
 
 
-audio = audio_stego(byte, False)
-audio.embed(pesan,42)
+# audio = audio_stego(byte, False)
+# audio.embed(pesan,42)
 #audio.extract(42)

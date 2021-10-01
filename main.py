@@ -64,6 +64,7 @@ def index():
         fileb64 = base64.b64encode(result).decode()
     else:
       key = request.form.get('keystego')
+      keyrc4 = bytearray(request.form.get('rc4key'),'utf-8')
       pesan = bytearray(request.files['fileinput'].stream.read())
       carrier = bytearray(request.files['carrier'].stream.read())
       # Cek payload
@@ -72,14 +73,14 @@ def index():
         payload = tes.getpayload()
         besarpesan = len(pesan)
         if request.form.get('stegoenkripsi') == 'true':
-          rc4i = rc4.RC4(key)
+          rc4i = rc4.RC4(keyrc4)
         if(besarpesan>payload//8):
           return render_template('index.html', message='File carrier tidak cukup', filebin=fileb64, rc4output=rc4output, filemime=mime)
         else:
           if request.form.get('proses2') == 'embed':
             if request.form.get('stegoenkripsi') == 'true':
               # Enkripsi dulu pakai RC4
-              message = rc4i.encrypt(pesan)
+              pesan = rc4i.encrypt(pesan)
             if request.form.get('urutan') == 'acak':
               # Embed audio, urutan acak dengan key
               isaudio = 'true'

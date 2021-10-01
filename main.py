@@ -76,12 +76,12 @@ def index():
             key = request.form.get('keystego')
             audio = stegoaudio.audio_stego(carrier, True)
             fileb64 = base64.b64encode(audio.embed(pesan,key)).decode()
-            message = 'File sudah diembed'
+            message = 'File sudah diembed. Fidelity: ' + str(audio.getfidelity())
           else:
             # Embed audio, urutan sekuensial
             audio = stegoaudio.audio_stego(carrier, False)
             fileb64 = base64.b64encode(audio.embed(pesan,0)).decode()
-            message = 'File sudah diembed'
+            message = 'File sudah diembed. Fidelity: ' + str(audio.getfidelity())
         else:
           if request.form.get('urutan') == 'acak':
             # Extract audio, urutan acak dengan key

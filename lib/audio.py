@@ -8,7 +8,7 @@ class audio_stego(stego):
     self.__original = carrier
     self.__israndom = random
     self.__fidelity = 1
-    self.__channel, self.__bitsample, self.__datasize, self.__payload = self.__getaudioinfo()
+    self.__channel, self.__bitsample, self.__datasize, self.__payload, self.formatlen, self.isuncompressed = self.__getaudioinfo()
 
   def getpayload(self):
     # Untuk mengembalikan nilai payload terbesar yang dapat ditampung dalam hitungan bit
@@ -182,6 +182,9 @@ class audio_stego(stego):
     channel = int.from_bytes(self.__carrier[22:23], 'little')
     bitsample = int.from_bytes(self.__carrier[34:35], 'little')
     datasize = int.from_bytes(self.__carrier[40:43], 'little')
+    formatlen = int.from_bytes(self.__carrier[16:19], 'little')
+    #print(int.from_bytes(self.__carrier[20:21], 'little'))
+    isuncompressed = int.from_bytes(self.__carrier[20:21], 'little') == 1
     #print('channel:', channel)
     #print('sample :', bitsample)
     #print('size   :', datasize)
@@ -194,7 +197,7 @@ class audio_stego(stego):
     payload = (datasize - 33)//(bitsample//8)
     #print('payload:', payload, "bits")
 
-    return channel, bitsample, datasize, payload
+    return channel, bitsample, datasize, payload, formatlen, isuncompressed
 
     
 

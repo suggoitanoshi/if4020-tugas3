@@ -95,14 +95,27 @@
           if($('#urutan').val() == 'acak') {
             $('#keystegolabel').show();
             $('#keystego').prop('required',true)
+            $('#keystego').prop('required',true);
+            $('#keystegolabel').show();
           }
           else
           {
             $('#keystegolabel').hide();
             $('#keystego').prop('required',false)
+            $('#keystegolabel').hide();
+            $('#keystego').prop('required',false);
           }
         });
-        $('#proses').change(function(){
+      $('#stegoenkripsi').change((e) => {
+        if($('#stegoenkripsi').is(':checked')){
+          $('#rc4key').prop('required',true);
+          $('#rc4keylabel').show();
+        }else{
+          $('#rc4key').prop('required',false);
+          $('#rc4keylabel').hide();
+        }
+      });
+      $('#proses').change(function(){
           if($('#proses').val() == 'dekripsi') {
             $('#prosesteks').text('Cipherteks:');
             $('#prosesteks2').text('Plainteks:');
@@ -118,24 +131,31 @@
             $('#fileinputlabel').show();
             $('#fileinputlabel').prop('required', true);
             $('#urutanlabel').show();
+            if($('#urutan').val() == 'acak') {
+              $('#keystegolabel').show();
+              $('#keystego').prop('required',true)
+              $('#keystego').prop('required',true);
+              $('#keystegolabel').show();
+            }
+            else
+            {
+              $('#keystegolabel').hide();
+              $('#keystego').prop('required',false)
+              $('#keystegolabel').hide();
+              $('#keystego').prop('required',false);
+            }
           }
           else
           {
             $('#fileinputlabel').hide();
             $('#fileinputlabel').prop('required', false);
             $('#urutanlabel').hide();
+            $('#keystegolabel').show();
+            $('#keystego').prop('required',true)
+            $('#keystego').prop('required',true);
+            $('#keystegolabel').show();
           }
         });
-    $('#stegoenkripsi').change((e) => {
-      if($('#stegoenkripsi').is(':checked')){
-        $('#keystego').prop('required',true);
-        $('#keystegolabel').show();
-      }else{
-        $('#keystegolabel').hide();
-        $('#keystego').prop('required',false);
-      }
-    });
-    
   });
   </script>
 
@@ -184,12 +204,12 @@
       <label for="stegoenkripsi">Gunakan enkripsi</label>
     </div>
     <div id='keystegolabel'>
-      <label for="keystego">Key:</label>
-      <input type="number" id="keystego" name="keystego" >
+      <label for="keystego">Key Seed:</label>
+      <input type="text" id="keystego" name="keystego" >
     </div>
     
     <div id='rc4keylabel'>
-      <label for="rc4key">Key:</label><br>
+      <label for="rc4key">Key RC4:</label><br>
       <input type='text' id="rc4key" name="rc4key" required> 
     </div>
     <div id='rc4inputlabel'>

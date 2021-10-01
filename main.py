@@ -58,11 +58,12 @@ def index():
         message = f'Success extract message'
         fileb64 = base64.b64encode(result).decode()
     else:
+      pesan = bytearray(request.files['fileinput'].stream.read())
       if request.form.get('stegoenkripsi') == 'true':
-        # Enkripsi pakai RC4
+        # Enkripsi dulu pakai RC4
         pass
       carrier = bytearray(request.files['carrier'].stream.read())
-      pesan = bytearray(request.files['fileinput'].stream.read())
+      
       if request.form.get('proses2') == 'embed':
         if request.form.get('urutan') == 'acak':
           # Embed audio, urutan acak dengan key

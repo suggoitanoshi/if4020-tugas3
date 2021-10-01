@@ -50,7 +50,7 @@ def index():
     elif jenis == 'stegoimage':
       acak = request.form.get('urutan') == 'acak'
       encrypt = request.form.get('stegoenkripsi') == 'true'
-      key = bytearray(request.form.get('keystego'), 'utf-8')
+      key = bytearray(request.form.get('rc4key'), 'utf-8')
       ims = stego.image_stego(request.files.get('carrier').stream)
       msg = bytearray(request.files.get('fileinput').stream.read())
       if request.form.get('proses2') == 'embed':
@@ -63,7 +63,7 @@ def index():
         message = f'Success extract message'
         fileb64 = base64.b64encode(result).decode()
     else:
-      key = request.form.get('keystego')
+      key = request.form.get('rc4key')
       keyrc4 = bytearray(request.form.get('rc4key'),'utf-8')
       pesan = bytearray(request.files['fileinput'].stream.read())
       carrier = bytearray(request.files['carrier'].stream.read())

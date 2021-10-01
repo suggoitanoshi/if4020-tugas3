@@ -21,7 +21,6 @@
             $('#proses2label').hide(); 
             $('#urutanlabel').hide(); 
             $('#stegoenkripsilabel').hide();
-            $('#keystegolabel').hide();
             $('#carrierlabel').hide(); 
             $('#carrier').prop('required',false)
             $('#rc4keylabel').show();
@@ -57,7 +56,8 @@
             $('#fileinput').prop('required',true)
             if($('#urutan').val() == 'acak' || $('#stegoenkripsi').is(':checked'))
             {
-              $('#keystegolabel').show();
+              $('#rc4key').prop('required',true);
+              $('#rc4keylabel').show();
             }
             $('#carrierlabel').show(); 
             if($('#proses2').val() == 'embed') {
@@ -92,18 +92,14 @@
           }
         });
         $('#urutan').change(function(){
-          if($('#urutan').val() == 'acak') {
-            $('#keystegolabel').show();
-            $('#keystego').prop('required',true)
-            $('#keystego').prop('required',true);
-            $('#keystegolabel').show();
+          if($('#urutan').val() == 'acak' || $('#stegoenkripsi').is(':checked')) {
+            $('#rc4key').prop('required',true);
+            $('#rc4keylabel').show();
           }
           else
           {
-            $('#keystegolabel').hide();
-            $('#keystego').prop('required',false)
-            $('#keystegolabel').hide();
-            $('#keystego').prop('required',false);
+            $('#rc4key').prop('required',false);
+            $('#rc4keylabel').hide();
           }
         });
       $('#stegoenkripsi').change((e) => {
@@ -111,8 +107,11 @@
           $('#rc4key').prop('required',true);
           $('#rc4keylabel').show();
         }else{
-          $('#rc4key').prop('required',false);
-          $('#rc4keylabel').hide();
+          if($('#urutan').val() != 'acak')
+          {
+            $('#rc4key').prop('required',false);
+            $('#rc4keylabel').hide();
+          }
         }
       });
       $('#proses').change(function(){
@@ -132,17 +131,13 @@
             $('#fileinputlabel').prop('required', true);
             $('#urutanlabel').show();
             if($('#urutan').val() == 'acak') {
-              $('#keystegolabel').show();
-              $('#keystego').prop('required',true)
-              $('#keystego').prop('required',true);
-              $('#keystegolabel').show();
+              $('#rc4key').prop('required',true);
+              $('#rc4keylabel').show();
             }
             else
             {
-              $('#keystegolabel').hide();
-              $('#keystego').prop('required',false)
-              $('#keystegolabel').hide();
-              $('#keystego').prop('required',false);
+              $('#rc4key').prop('required',false);
+              $('#rc4keylabel').hide();
             }
           }
           else
@@ -151,10 +146,8 @@
             $('#fileinputlabel').prop('required', false);
             $('#fileinput').prop('required', false);
             $('#urutanlabel').hide();
-            $('#keystegolabel').show();
-            $('#keystego').prop('required',true)
-            $('#keystego').prop('required',true);
-            $('#keystegolabel').show();
+            $('#rc4key').prop('required',true);
+            $('#rc4keylabel').show();
           }
         });
   });
@@ -204,13 +197,9 @@
       <input type="checkbox" id="stegoenkripsi" name="stegoenkripsi" value="true">
       <label for="stegoenkripsi">Gunakan enkripsi</label>
     </div>
-    <div id='keystegolabel'>
-      <label for="keystego">Key Seed:</label>
-      <input type="text" id="keystego" name="keystego" >
-    </div>
-    
+  
     <div id='rc4keylabel'>
-      <label for="rc4key">Key RC4:</label><br>
+      <label for="rc4key">Key:</label><br>
       <input type='text' id="rc4key" name="rc4key" required> 
     </div>
     <div id='rc4inputlabel'>

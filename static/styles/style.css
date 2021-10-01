@@ -12,6 +12,10 @@ html{
     height: 100%;
     background: rgb(237,255,254);
     background: linear-gradient(0deg, rgba(237,255,254,1) 0%, rgba(205,228,250,1) 100%, rgba(246,255,255,1) 100%);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 body{
     width: 90%;

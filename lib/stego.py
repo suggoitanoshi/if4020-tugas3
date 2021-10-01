@@ -1,10 +1,9 @@
-# from a import bitstring_to_ba
 import random
 from typing import BinaryIO, Tuple
 import io
 from lib.rc4 import RC4
 from PIL import Image
-from math import ceil,floor,log10, sqrt
+from math import log10, sqrt
 
 class stego:
   input_file = ""

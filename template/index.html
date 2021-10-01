@@ -116,17 +116,21 @@
         $('#proses2').change(function(){
           if($('#proses2').val() == 'embed') {
             $('#fileinputlabel').show();
+            $('#urutanlabel').show();
           }
           else
           {
             $('#fileinputlabel').hide();
+            $('#urutanlabel').hide();
           }
         });
     $('#stegoenkripsi').change((e) => {
       if($('#stegoenkripsi').is(':checked')){
+        $('#keystego').prop('required',true);
         $('#keystegolabel').show();
       }else{
         $('#keystegolabel').hide();
+        $('#keystego').prop('required',false);
       }
     });
     
@@ -205,7 +209,7 @@
     <input type="submit" value="Submit">
   </form>
   {% if message %}
-  <div class='msg'><p>{{ message }}</p><p>>> <a href='data:{{filemime}};base64,{{ filebin }}'>Download</a> <<</p></div>
+  <div class='msg'><p>{{ message }}</p>{% if filebin %}<p>>> <a href='data:{{filemime}};base64,{{ filebin }}'>Download</a> <<</p>{% endif %}</div>
   {% endif %}
 </body>
 </html>

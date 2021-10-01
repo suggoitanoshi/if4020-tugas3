@@ -5,23 +5,40 @@ class audio_stego(stego):
   def __init__(self, carrier: bytearray, random: bool):
     """Objek untuk menangani Steganografi Audio"""
     self.__carrier = carrier
+    self.__original = carrier
     self.__israndom = random
+    self.__fidelity = 1
     self.__channel, self.__bitsample, self.__datasize, self.__payload = self.__getaudioinfo()
+
+  def getpayload(self):
+    # Untuk mengembalikan nilai payload terbesar yang dapat ditampung dalam hitungan bit
+    return self.__payload
 
   def embed(self, message: bytearray, key: int) -> bytearray:
     #Cek jump menurut tipe file wav (16-bit, 24-bit, 32-bit)
+    # Fidelity: Kesamaan file ori dan stego dalam %
+    # Semakin besar nilainya, kemiripan semakin tinggi
+    # Nilai maks adalah 1 atau 100% kesamaan
+    self.__fidelity = 1
     jump = self.__bitsample//8
     panjangpesan = len(message)
+    diff = 0
 
     #Embed panjang pesan
     bytepanjang = panjangpesan.to_bytes(4, 'big')
-    for i in range(0,4):
-      self.__carrier[44+i] = bytepanjang[i]
+    for i in range(0,4*8):
+      bit = self.__tobit(bytepanjang[i//8])[i%8]
+      if bit != self.__tobit(self.__carrier[44+i])[-1]:
+        diff += 1
+      else:
+        if bit == '0':
+          self.__carrier[44+i] = self.__changetozero(self.__carrier[44+i])
+        else:
+          self.__carrier[44+i] = self.__changetoone(self.__carrier[44+i])
 
-    
     if(self.__israndom):
       maxrand = self.__payload//jump
-      self.__carrier[48] = 1
+      self.__carrier[76] = self.__changetoone(self.__carrier[76])
       usedidx = []
       random.seed(key)
       idx = random.randint(0,maxrand)*jump
@@ -35,43 +52,74 @@ class audio_stego(stego):
           bitidx = i%8
           if(bitidx==0):
             bitpesan = self.__tobit(message[i//8])
-          if(bitpesan[bitidx]=='0'):
-            self.__carrier[idx+49] = self.__changetozero(self.__carrier[idx+49])
+           
+          if bit != self.__tobit(self.__carrier[44+i])[-1]:
+            diff += 1
           else:
-            self.__carrier[idx+49] = self.__changetoone(self.__carrier[idx+49])
+            if(bitpesan[bitidx]=='0'):
+              self.__carrier[idx+77] = self.__changetozero(self.__carrier[idx+77])
+            else:
+              self.__carrier[idx+77] = self.__changetoone(self.__carrier[idx+77])
           i += 1
           idx = random.randint(0,maxrand)*jump
     
 
     else:
-      self.__carrier[48] = 0
+      self.__carrier[76] = self.__changetozero(self.__carrier[76])
       bitpesan = ''
       
       for i in range(0,panjangpesan*8):
         bitidx = i%8
         if(bitidx==0):
           bitpesan = self.__tobit(message[i//8])
-        if(bitpesan[bitidx]=='0'):
-          self.__carrier[i*jump+49] = self.__changetozero(self.__carrier[i*jump+49])
+          #print(bitpesan)
+        
+        if bit != self.__tobit(self.__carrier[44+i])[-1]:
+          diff += 1
         else:
-          self.__carrier[i*jump+49] = self.__changetoone(self.__carrier[i*jump+49])   
+          if(bitpesan[bitidx]=='0'):
+            self.__carrier[i*jump+77] = self.__changetozero(self.__carrier[i*jump+77])
+          else:
+            self.__carrier[i*jump+77] = self.__changetoone(self.__carrier[i*jump+77]) 
 
+    if diff != 0:
+      self.__fidelity -= diff/len(self.__carrier)
     #X. Write file hasil
-    #fname = open('downloads/audioembed.wav', 'wb')
+    #fname = open('../audioembed.wav', 'wb')
     #fname.write(self.__carrier)
     #fname.close()
     return self.__carrier
     #print('Done!')
 
 
+  def getfidelity(self):
+    return self.__fidelity
+
+
   def extract(self, key) -> bytearray:
     #Cek jump menurut tipe file wav (16-bit, 24-bit, 32-bit)
     jump = self.__bitsample//8
-    panjangpesan = int.from_bytes(self.__carrier[44:48], 'big')
-    messagebytes = []
+    #panjangpesan = int.from_bytes(self.__carrier[44:48], 'big')
+    bitstemp = ''
+    arrtemp = [0 for i in range(0, 4)]
+    bytetemp = []
+    lengthobj = bytearray(arrtemp)
+
+    for i in range(0,4*8):
+      bitstemp += self.__tobit(self.__carrier[i+44])[7]
+      if len(bitstemp) == 8:
+        bytetemp.append(int(bitstemp,2))
+        bitstemp = ''
+
+    for i in range(0,len(bytetemp)):
+      lengthobj[i] = bytetemp[i]
+
+    panjangpesan = int.from_bytes(lengthobj, 'big')
     arrtemp = [0 for i in range(0, panjangpesan)]
+    messagebytes = []
+    
     messageobj = bytearray(arrtemp)
-    if(self.__carrier[48] == 1):
+    if(self.__tobit(self.__carrier[76])[7] == '1'):
       maxrand = self.__payload//jump
       usedidx = []
       random.seed(key)
@@ -85,7 +133,7 @@ class audio_stego(stego):
         else:
           usedidx.append(idx)
           
-          bit += self.__tobit(self.__carrier[idx+49])[7]
+          bit += self.__tobit(self.__carrier[idx+77])[7]
           #print('bit',i,':',idx, '=', bit)
           j += 1
           if j==8:
@@ -97,11 +145,15 @@ class audio_stego(stego):
     else:
       j = 0
       bit = ''
+      
       for i in range(0,panjangpesan*8):
-        bit += self.__tobit(self.__carrier[i+49])[7]
+        bit += self.__tobit(self.__carrier[i*jump+77])[-1]
+        #print('i ke',i,";",bit)
         j += 1
         if j==8:
           messagebytes.append(int(bit,2))
+          #print(bit)
+          
           bit = ''
           j = 0
           
@@ -109,9 +161,9 @@ class audio_stego(stego):
       messageobj[i] = messagebytes[i]
 
     #X. Write file hasil
-    # fname = open('../hasilekstrak', 'wb')
-    # fname.write(messageobj)
-    # fname.close()
+    #fname = open('../hasilekstrak2', 'wb')
+    #fname.write(messageobj)
+    #fname.close()
     return messageobj
     #print('Done!')
       
@@ -141,7 +193,7 @@ class audio_stego(stego):
     # 32 bit pertama dipakai untuk menyatakan panjang bit pesan tersembunyi dalam byte
     # 8 bit berikutnya menentukan sekuensial atau acak
     # (0 = sekuensial, 1 = acak)
-    payload = (datasize - 5)//(bitsample//8)
+    payload = (datasize - 33)//(bitsample//8)
     #print('payload:', payload, "bits")
 
     return channel, bitsample, datasize, payload
@@ -167,18 +219,18 @@ class audio_stego(stego):
 
 # TESTING
 # 1. Baca file WAV ke bytearray
-#file = open("../teswriteacak.wav", "rb")
-#byte = bytearray(file.read()) 
-#file.close()
+file = open("../example.wav", "rb")
+byte = bytearray(file.read()) 
+file.close()
 
 
 # 4. Memasukkan file
-#finput = open("../tespesan", "rb")
-##pesan = bytearray(finput.read()) 
-#finput.close()
+finput = open("../tespesan", "rb")
+pesan = bytearray(finput.read()) 
+finput.close()
 
 
 
-#audio = audio_stego(byte, True)
-#audio.embed(pesan,42)
+audio = audio_stego(byte, False)
+audio.embed(pesan,42)
 #audio.extract(42)

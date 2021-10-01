@@ -116,11 +116,13 @@
         $('#proses2').change(function(){
           if($('#proses2').val() == 'embed') {
             $('#fileinputlabel').show();
+            $('#fileinputlabel').prop('required', true);
             $('#urutanlabel').show();
           }
           else
           {
             $('#fileinputlabel').hide();
+            $('#fileinputlabel').prop('required', false);
             $('#urutanlabel').hide();
           }
         });
